@@ -11,12 +11,20 @@ package de.embl.almf.command;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.scijava.Context;
 import org.scijava.ItemIO;
+import org.scijava.app.App;
+import org.scijava.app.AppService;
 import org.scijava.command.Command;
+import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import org.scijava.plugin.PluginInfo;
+import org.scijava.plugin.SciJavaPlugin;
 import org.scijava.ui.UIService;
+
 
 import net.imagej.Dataset;
 import net.imagej.ImageJ;
@@ -92,10 +100,29 @@ public class HelloWorldCommand<T extends RealType<T>> implements Command {
      * @throws Exception
      */
     public static void main(final String... args) throws Exception {
-        // create the ImageJ application context with all available services
+        Context context=new Context();
+        
+        CommandService csLowLevel = context.service(CommandService.class);
+    	
+    	
+    	// create the ImageJ application context with all available services
         final ImageJ ij = new ImageJ();
+        CommandService cs = ij.command();
+        
+         AppService myapp = ij.app();
+         
+         Map<String, App> apps = myapp.getApps();
+        
         ij.ui().showUI();
-
+        ij.ui().show(apps);
+        System.out.println(apps);
+        String imageJGroupId = apps.get("ImageJ").getGroupId();
+        App app = apps.get("ImageJ");
+        System.out.println(imageJGroupId);
+        
+        
+        PluginInfo<SciJavaPlugin> myPlugin = ij.plugin().getPlugin(HelloWorldCommand.class);
+        System.out.println(myPlugin);
 //        // ask the user for a file to open
 //        final File file = ij.ui().chooseFile(null, "open");
 //
